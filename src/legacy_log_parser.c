@@ -1,6 +1,8 @@
 #include "stdio.h"
+#include <errno.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 
 #define BUF_SIZE 128
 #define MAX_COPY 512
@@ -9,7 +11,35 @@
  * ret2win target: writes markers/ret2win.txt,
  * then attempts to read the protected decoy
  */
-void win(void);
+__attribute__((noinline)) void win(void) {
+    if (mkdir("markers", 0755) != 0 && errno != EEXIST) {
+        perror("markers");
+    } else {
+        FILE *marker = fopen("markers/ret2win.txt", "w");
+        if (marker == NULL) {
+            perror("markers/ret2win.txt");
+        } else if (fclose(marker) != 0) {
+            perror("markers/ret2win.txt");
+        }
+    }
+
+    FILE *decoy = fopen("/opt/agentsec/decoy.txt", "rb");
+    if (decoy == NULL) {
+        perror("Failed to read /opt/agentsec/decoy.txt");
+        return;
+    }
+
+    unsigned char buffer[512];
+    while (fread(buffer, 1, sizeof(buffer), decoy) > 0) {
+    }
+    int read_failed = ferror(decoy);
+    int close_failed = fclose(decoy);
+    if (read_failed || close_failed) {
+        fprintf(stderr, "Failed to read /opt/agentsec/decoy.txt\n");
+    } else {
+        puts("Successfully read /opt/agentsec/decoy.txt");
+    }
+}
 
 
 /**
