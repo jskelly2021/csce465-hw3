@@ -1,3 +1,9 @@
+# HW Specific
+legacy_log_parser
+legacy_log_parser_fixed
+markers
+*.bin
+
 # Prerequisites
 *.d
 
@@ -35,8 +41,6 @@
 *.i*86
 *.x86_64
 *.hex
-legacy_log_parser
-legacy_log_parser_fixed
 
 # Debug files
 *.dSYM/
@@ -115,7 +119,6 @@ cover/
 *.pot
 
 # Django stuff:
-*.log
 local_settings.py
 db.sqlite3
 db.sqlite3-journal

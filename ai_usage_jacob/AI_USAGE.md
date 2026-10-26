@@ -2,19 +2,19 @@
 
 ## Entry 1:
 
-**Tool/model and date**:
+**Tool/model and date:** OpenAI ChatGPT (GPT-6), October 24–26, 2026.
 
-**Purpose**:
+**Purpose:** Understand HW3 Task 1 requirements, parser structure, stack overflow exploitation, and dependencies for Task 3. Clarify log printing, NOP sled usage, and Unix file permissions.
 
-**AI Conversation Log files**:
+**AI Conversation Log files:** `ai_logs/task1_conversation.md`
 
-**What I used**:
+**What I used:** Guidance on program structure, GDB offset analysis, payload construction, and explanations of ret2win versus traditional stack code injection.
 
-**What I changed**:
+**What I changed:** Implemented and adjusted my own vulnerable parser and exploit. Used the empirically determined 136-byte return-address offset rather than assuming a fixed value.
 
-**How I tested it**:
+**How I tested it:** Executed the payload against the vulnerable parser and confirmed that `win()` ran. Verified that reading the protected decoy remained blocked and that changing the payload offset caused the exploit to fail.
 
-**One error, limitation, or rejected suggestion**:
+**One error, limitation, or rejected suggestion:** Considered using a NOP sled but determined it was unnecessary for ret2win, since the exploit redirects execution to an existing function rather than executing injected stack code.
 
 ## Entry 2: Legacy log parser
 
@@ -22,7 +22,7 @@
 
 **Purpose**: Implement the vulnerable parser and `win()` target.
 
-**AI Conversation Log files**: [Conversation](ai_logs/2026-10-26-legacy-log-parser.md).
+**AI Conversation Log files**: `ai_logs/legacy_log_parser.md`
 
 **What I used**: Unchecked copy, heap-backed file reading, and non-inline `win()`.
 
