@@ -31,3 +31,19 @@
 **How I tested it**: GCC compilation, parser smoke tests, and a temporary `win()` harness.
 
 **One error, limitation, or rejected suggestion**: Rejected writing text into the marker file.
+
+## Entry 3: Run parser wrapper
+
+**Tool/model and date**: OpenAI Codex (GPT-6), November 1, 2026.
+
+**Purpose**: Run the legacy parser with input restricted to `~/csce465-hw3/inbox/`.
+
+**AI Conversation Log files**: `ai_logs/task2_run_parser.md`
+
+**What I used**: Bash wrapper with canonical path validation, readable-file checks, and `exec`.
+
+**What I changed**: Added `skills/legacy-parser/run_parser.sh` to validate one input and invoke the existing binary.
+
+**How I tested it**: Bash syntax check, seven input validation cases, and expected parser output verification.
+
+**One error, limitation, or rejected suggestion**: Path validation and parser file opening are separate operations, so concurrent file changes can create a race.

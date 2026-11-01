@@ -84,3 +84,15 @@ ls markers/
 ```
 
 The payload should redirect execution to `win()`, creating `markers/ret2win.txt` and attempting to read the protected decoy. Reading the protected decoy file should fail without elevated permissions.
+
+## Task 2
+
+### Install the skill
+
+Make sure OpenClaw is installed and running.
+
+```sh
+openclaw --version
+openclaw status
+```
+
