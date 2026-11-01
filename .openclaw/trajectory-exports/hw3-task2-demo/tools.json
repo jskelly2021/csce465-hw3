@@ -1,0 +1,782 @@
+[
+  {
+    "name": "apply_patch",
+    "description": "Apply a patch to one or more files using the apply_patch format. The input should include *** Begin Patch and *** End Patch markers.",
+    "parameters": {
+      "type": "object",
+      "required": [
+        "input"
+      ],
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Patch content using the *** Begin Patch/End Patch format."
+        }
+      }
+    }
+  },
+  {
+    "name": "create_goal",
+    "description": "Create a goal only when explicitly requested by the user or system instructions. Fails if a goal already exists; use user-facing goal controls to clear it.",
+    "parameters": {
+      "type": "object",
+      "required": [
+        "objective"
+      ],
+      "properties": {
+        "objective": {
+          "type": "string",
+          "description": "Concrete objective to pursue. Create only when explicitly requested."
+        },
+        "token_budget": {
+          "type": "number",
+          "description": "Optional positive token budget for this goal."
+        }
+      }
+    }
+  },
+  {
+    "name": "edit",
+    "description": "Edit a single file using exact text replacement. Every edits[].oldText must match a unique, non-overlapping region of the original file. If two changes affect the same block or nearby lines, merge them into one edit instead of emitting overlapping edits. Do not include large unchanged regions just to connect distant changes.",
+    "parameters": {
+      "type": "object",
+      "required": [
+        "path",
+        "edits"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "Path to the file to edit (relative or absolute)"
+        },
+        "edits": {
+          "type": "array",
+          "items": {
+            "truncated": true,
+            "reason": "trajectory-depth-limit",
+            "limitDepth": 6
+          },
+          "description": "One or more targeted replacements. Each edit is matched against the original file, not incrementally. Do not include overlapping or nested edits. If two changes touch the same block or nearby lines, merge them into one edit instead."
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "exec",
+    "description": "Execute shell commands with background continuation for work that starts now. Use yieldMs/background to continue later via process tool. For long-running work started now, rely on automatic completion wake when it is enabled and the command emits output or fails; otherwise use process to confirm completion. Use process whenever you need logs, status, input, or intervention. Use pty=true for TTY-required commands (terminal UIs, coding agents).",
+    "parameters": {
+      "type": "object",
+      "required": [
+        "command"
+      ],
+      "properties": {
+        "command": {
+          "type": "string",
+          "description": "Shell command to execute"
+        },
+        "workdir": {
+          "type": "string",
+          "description": "Working directory. Blank/whitespace values are invalid; omit to use the default cwd."
+        },
+        "env": {
+          "type": "object",
+          "patternProperties": {
+            "truncated": true,
+            "reason": "trajectory-depth-limit",
+            "limitDepth": 6
+          }
+        },
+        "yieldMs": {
+          "type": "number",
+          "description": "Milliseconds to wait before backgrounding (default 10000)"
+        },
+        "background": {
+          "type": "boolean",
+          "description": "Run in background immediately"
+        },
+        "timeout": {
+          "type": "number",
+          "description": "Timeout in seconds (optional, kills process on expiry)"
+        },
+        "pty": {
+          "type": "boolean",
+          "description": "Run in a pseudo-terminal (PTY) when available (TTY-required CLIs, coding agents)"
+        },
+        "elevated": {
+          "type": "boolean",
+          "description": "Run on the host with elevated permissions (if allowed)"
+        },
+        "host": {
+          "type": "string",
+          "enum": {
+            "truncated": true,
+            "reason": "trajectory-depth-limit",
+            "limitDepth": 6
+          },
+          "description": "Exec host/target (auto|sandbox|gateway|node)."
+        },
+        "security": {
+          "type": "string",
+          "description": "Ignored for normal calls; exec security is set by tools.exec.security and host approvals."
+        },
+        "ask": {
+          "type": "string",
+          "description": "Baseline ask comes from tools.exec.ask and host approvals; channel-origin calls ignore per-call ask when effective host ask is off."
+        },
+        "node": {
+          "type": "string",
+          "description": "Node id/name for host=node."
+        }
+      }
+    }
+  },
+  {
+    "name": "get_goal",
+    "description": "Get the current goal for this thread, including status and token usage.",
+    "parameters": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "image",
+    "description": "Analyze images with vision model. Use image for one path/URL, images for max 20. Only use this tool when images were NOT already provided; prompt images already visible.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "prompt": {
+          "type": "string"
+        },
+        "image": {
+          "type": "string",
+          "description": "One image path/URL."
+        },
+        "images": {
+          "type": "array",
+          "items": {
+            "truncated": true,
+            "reason": "trajectory-depth-limit",
+            "limitDepth": 6
+          },
+          "description": "Image paths/URLs; maxImages default 20."
+        },
+        "model": {
+          "type": "string"
+        },
+        "maxBytesMb": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "maxImages": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    }
+  },
+  {
+    "name": "process",
+    "description": "Manage running exec sessions for commands already started: list, poll, log, write, send-keys, submit, paste, kill. Use poll/log when you need status, logs, quiet-success confirmation, or completion confirmation when automatic completion wake is unavailable. Use poll/log also for input-wait hints. Use write/send-keys/submit/paste/kill for input or intervention.",
+    "parameters": {
+      "type": "object",
+      "required": [
+        "action"
+      ],
+      "properties": {
+        "action": {
+          "type": "string",
+          "description": "Process action (list|poll|log|write|send-keys|submit|paste|kill|clear|remove)"
+        },
+        "sessionId": {
+          "type": "string",
+          "description": "Session id for actions other than list"
+        },
+        "data": {
+          "type": "string",
+          "description": "Data to write for write"
+        },
+        "keys": {
+          "type": "array",
+          "items": {
+            "truncated": true,
+            "reason": "trajectory-depth-limit",
+            "limitDepth": 6
+          },
+          "description": "Key tokens to send for send-keys"
+        },
+        "hex": {
+          "type": "array",
+          "items": {
+            "truncated": true,
+            "reason": "trajectory-depth-limit",
+            "limitDepth": 6
+          },
+          "description": "Hex bytes to send for send-keys"
+        },
+        "literal": {
+          "type": "string",
+          "description": "Literal string for send-keys"
+        },
+        "text": {
+          "type": "string",
+          "description": "Text to paste for paste"
+        },
+        "bracketed": {
+          "type": "boolean",
+          "description": "Wrap paste in bracketed mode"
+        },
+        "eof": {
+          "type": "boolean",
+          "description": "Close stdin after write"
+        },
+        "offset": {
+          "type": "number",
+          "description": "Log offset"
+        },
+        "limit": {
+          "type": "number",
+          "description": "Log length"
+        },
+        "timeout": {
+          "type": "number",
+          "description": "For poll: wait up to this many milliseconds before returning; max 30000 ms, higher values are clamped to 30000",
+          "minimum": 0
+        }
+      }
+    }
+  },
+  {
+    "name": "read",
+    "description": "Read the contents of a file. Supports text files and images (jpg, png, gif, webp, bmp). Images are sent as attachments. For text files, output is truncated to 2000 lines or 50KB (whichever is hit first). Use offset/limit for large files. When you need the full file, continue with offset until complete.",
+    "parameters": {
+      "type": "object",
+      "required": [
+        "path"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "Path to the file to read (relative or absolute)"
+        },
+        "offset": {
+          "type": "number",
+          "description": "Line number to start reading from (1-indexed)"
+        },
+        "limit": {
+          "type": "number",
+          "description": "Maximum number of lines to read"
+        }
+      }
+    }
+  },
+  {
+    "name": "session_status",
+    "description": "Show /status-like card for current/visible session: model, usage, time, cost, tasks. Use `sessionKey=\"current\"` for current session; UI labels like `openclaw-tui` are not keys. `model` sets session override; `model=default` resets. Use for active model/session config questions.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "sessionKey": {
+          "type": "string"
+        },
+        "model": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  {
+    "name": "sessions_history",
+    "description": "Fetch sanitized history for visible session. Use before replying, debugging, resuming; supports limit, offset pagination, and tool-message inclusion.",
+    "parameters": {
+      "type": "object",
+      "required": [
+        "sessionKey"
+      ],
+      "properties": {
+        "sessionKey": {
+          "type": "string"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "includeTools": {
+          "type": "boolean"
+        }
+      }
+    }
+  },
+  {
+    "name": "sessions_list",
+    "description": "List visible sessions; filter by kind, label, agentId, search, activity, archive state. Use before sessions_history or sessions_send target selection.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "kinds": {
+          "type": "array",
+          "items": {
+            "truncated": true,
+            "reason": "trajectory-depth-limit",
+            "limitDepth": 6
+          }
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "activeMinutes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "messageLimit": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "agentId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "search": {
+          "type": "string",
+          "minLength": 1
+        },
+        "archived": {
+          "type": "boolean"
+        },
+        "includeDerivedTitles": {
+          "type": "boolean"
+        },
+        "includeLastMessage": {
+          "type": "boolean"
+        }
+      }
+    }
+  },
+  {
+    "name": "sessions_send",
+    "description": "Send message to visible session by sessionKey/label, or configured agent by agentId; sessionKey wins when redundant label metadata is present. Thread-scoped chats rejected; target parent channel session. Creates missing configured-agent main session; waits for reply when available.",
+    "parameters": {
+      "type": "object",
+      "required": [
+        "message"
+      ],
+      "properties": {
+        "sessionKey": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "agentId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "message": {
+          "type": "string"
+        },
+        "timeoutSeconds": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  },
+  {
+    "name": "sessions_spawn",
+    "description": "Spawn clean child session; default `runtime=\"subagent\"`. `mode=\"run\"` one-shot background work. Subagents inherit parent workspace. Native subagents get task in first visible `[Subagent Task]` message. Native only: `context=\"fork\"` only when child needs current transcript; else omit or `isolated`. Use for fresh child-session work. Delegate sidecar/parallel tasks: batch file reads, multi-step searches, data collection. Avoid delegating quick lookups or single-file reads unless policy prefers delegation. After spawning, do non-overlapping work while run-mode results return.",
+    "parameters": {
+      "type": "object",
+      "required": [
+        "task"
+      ],
+      "properties": {
+        "task": {
+          "type": "string"
+        },
+        "taskName": {
+          "type": "string",
+          "description": "Stable alias for later targeting; lowercase letters/digits/underscores/hyphens, starts letter."
+        },
+        "label": {
+          "type": "string"
+        },
+        "runtime": {
+          "type": "string",
+          "enum": {
+            "truncated": true,
+            "reason": "trajectory-depth-limit",
+            "limitDepth": 6
+          }
+        },
+        "agentId": {
+          "type": "string"
+        },
+        "model": {
+          "type": "string"
+        },
+        "thinking": {
+          "type": "string"
+        },
+        "cwd": {
+          "type": "string"
+        },
+        "mode": {
+          "type": "string",
+          "enum": {
+            "truncated": true,
+            "reason": "trajectory-depth-limit",
+            "limitDepth": 6
+          }
+        },
+        "cleanup": {
+          "type": "string",
+          "enum": {
+            "truncated": true,
+            "reason": "trajectory-depth-limit",
+            "limitDepth": 6
+          }
+        },
+        "sandbox": {
+          "type": "string",
+          "enum": {
+            "truncated": true,
+            "reason": "trajectory-depth-limit",
+            "limitDepth": 6
+          }
+        },
+        "context": {
+          "type": "string",
+          "enum": {
+            "truncated": true,
+            "reason": "trajectory-depth-limit",
+            "limitDepth": 6
+          },
+          "description": "Native context. Omit/\"isolated\" for clean child; \"fork\" only when child needs requester transcript."
+        },
+        "lightContext": {
+          "type": "boolean",
+          "description": "Light bootstrap context; runtime=\"subagent\" only."
+        },
+        "attachments": {
+          "type": "array",
+          "items": {
+            "truncated": true,
+            "reason": "trajectory-depth-limit",
+            "limitDepth": 6
+          },
+          "maxItems": 50
+        },
+        "attachAs": {
+          "type": "object",
+          "properties": {
+            "truncated": true,
+            "reason": "trajectory-depth-limit",
+            "limitDepth": 6
+          }
+        }
+      }
+    }
+  },
+  {
+    "name": "sessions_yield",
+    "description": "End current turn. Use after spawning subagents; results arrive as next message.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  {
+    "name": "skill_workshop",
+    "description": "Create, update, revise, list, inspect, apply, reject, or quarantine Skill Workshop proposals when reusable procedures should be captured, improved, or explicitly approved.",
+    "parameters": {
+      "type": "object",
+      "required": [
+        "action"
+      ],
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": {
+            "truncated": true,
+            "reason": "trajectory-depth-limit",
+            "limitDepth": 6
+          },
+          "description": "create = new skill; update = existing live skill; revise = existing pending proposal; list/inspect discover pending proposals (not filesystem search); apply/reject/quarantine are explicit lifecycle actions."
+        },
+        "proposal_id": {
+          "type": "string",
+          "description": "Existing proposal id for action=inspect, action=revise, action=apply, action=reject, or action=quarantine."
+        },
+        "name": {
+          "type": "string",
+          "description": "Skill/proposal name. Required for create; for inspect/revise when proposal_id is unknown, resolves a pending proposal or returns candidates."
+        },
+        "query": {
+          "type": "string",
+          "description": "Optional query for action=list."
+        },
+        "status": {
+          "type": "string",
+          "enum": {
+            "truncated": true,
+            "reason": "trajectory-depth-limit",
+            "limitDepth": 6
+          },
+          "description": "Optional proposal status filter for action=list."
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50,
+          "description": "Maximum proposals to return for action=list. Defaults to 20."
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 160,
+          "description": "Skill description for create/update/revise; max 160 bytes. On update, concise text shortens the proposal listing entry."
+        },
+        "skill_name": {
+          "type": "string",
+          "description": "Existing skill name or key for action=update."
+        },
+        "proposal_content": {
+          "type": "string",
+          "description": "Full proposed procedure markdown for action=create, action=update, or action=revise. It will be stored as PROPOSAL.md. Keep under configured skills.workshop.maxSkillBytes; default max is 40000 bytes."
+        },
+        "support_files": {
+          "type": "array",
+          "items": {
+            "truncated": true,
+            "reason": "trajectory-depth-limit",
+            "limitDepth": 6
+          },
+          "description": "Optional support files to store with the proposal."
+        },
+        "goal": {
+          "type": "string",
+          "description": "Proposal or improvement goal."
+        },
+        "evidence": {
+          "type": "string",
+          "description": "Short evidence or notes."
+        },
+        "reason": {
+          "type": "string",
+          "description": "Optional reason for action=apply, action=reject, or action=quarantine."
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "subagents",
+    "description": "List active and recent subagents for the requester session. If sessions_yield exists, use it for completion; do not poll wait loops.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": {
+            "truncated": true,
+            "reason": "trajectory-depth-limit",
+            "limitDepth": 6
+          }
+        },
+        "recentMinutes": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    }
+  },
+  {
+    "name": "update_goal",
+    "description": "Mark the current goal complete only when achieved, or blocked only after the same blocking condition recurs for at least three consecutive goal turns. Do not use blocked for ordinary difficulty or missing polish.",
+    "parameters": {
+      "type": "object",
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": {
+            "truncated": true,
+            "reason": "trajectory-depth-limit",
+            "limitDepth": 6
+          },
+          "description": "complete | blocked."
+        },
+        "note": {
+          "type": "string",
+          "description": "Short status note."
+        }
+      }
+    }
+  },
+  {
+    "name": "update_plan",
+    "description": "Update current run plan. Use for non-trivial multi-step work; keep plan current while executing. Short steps; max one `in_progress`; skip for simple one-step work.",
+    "parameters": {
+      "type": "object",
+      "required": [
+        "plan"
+      ],
+      "properties": {
+        "explanation": {
+          "type": "string",
+          "description": "Short note: what changed."
+        },
+        "plan": {
+          "type": "array",
+          "items": {
+            "truncated": true,
+            "reason": "trajectory-depth-limit",
+            "limitDepth": 6
+          },
+          "minItems": 1,
+          "description": "Ordered steps; max one in_progress."
+        }
+      }
+    }
+  },
+  {
+    "name": "web_fetch",
+    "description": "Fetch URL and extract readable markdown/text. Lightweight page access; no browser automation.",
+    "parameters": {
+      "type": "object",
+      "required": [
+        "url"
+      ],
+      "properties": {
+        "url": {
+          "type": "string",
+          "description": "HTTP(S) URL."
+        },
+        "extractMode": {
+          "type": "string",
+          "enum": {
+            "truncated": true,
+            "reason": "trajectory-depth-limit",
+            "limitDepth": 6
+          },
+          "description": "Extract as markdown/text.",
+          "default": "markdown"
+        },
+        "maxChars": {
+          "type": "integer",
+          "description": "Max chars returned; truncates.",
+          "minimum": 100
+        }
+      }
+    }
+  },
+  {
+    "name": "web_search",
+    "description": "Search web for current info; returns normalized provider results.",
+    "parameters": {
+      "type": "object",
+      "required": [
+        "query"
+      ],
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "Search query."
+        },
+        "count": {
+          "type": "number",
+          "description": "Result count.",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "country": {
+          "type": "string",
+          "description": "2-letter country code."
+        },
+        "language": {
+          "type": "string",
+          "description": "ISO 639-1 language."
+        },
+        "freshness": {
+          "type": "string",
+          "description": "Time filter: day/week/month/year."
+        },
+        "date_after": {
+          "type": "string",
+          "description": "Published after YYYY-MM-DD."
+        },
+        "date_before": {
+          "type": "string",
+          "description": "Published before YYYY-MM-DD."
+        },
+        "search_lang": {
+          "type": "string",
+          "description": "Brave result language."
+        },
+        "ui_lang": {
+          "type": "string",
+          "description": "Brave UI locale."
+        },
+        "domain_filter": {
+          "type": "array",
+          "items": {
+            "truncated": true,
+            "reason": "trajectory-depth-limit",
+            "limitDepth": 6
+          },
+          "description": "Perplexity domain filter."
+        },
+        "max_tokens": {
+          "type": "number",
+          "description": "Perplexity total token budget.",
+          "minimum": 1,
+          "maximum": 1000000
+        },
+        "max_tokens_per_page": {
+          "type": "number",
+          "description": "Perplexity tokens per page.",
+          "minimum": 1
+        }
+      }
+    }
+  },
+  {
+    "name": "write",
+    "description": "Write content to a file. Creates the file if it doesn't exist, overwrites if it does. Automatically creates parent directories.",
+    "parameters": {
+      "type": "object",
+      "required": [
+        "path",
+        "content"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "Path to the file to write (relative or absolute)"
+        },
+        "content": {
+          "type": "string",
+          "description": "Content to write to the file"
+        }
+      }
+    }
+  }
+]
