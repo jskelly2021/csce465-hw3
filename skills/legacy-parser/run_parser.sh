@@ -1,12 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+INBOX="$HOME/csce465-hw3/inbox"
+PARSER="$HOME/csce465-hw3/legacy_log_parser"
+
 if [[ $# -ne 1 ]]; then
     printf 'Usage: %s FILE\n' "$0" >&2
     exit 1
 fi
 
-inbox=$(realpath -e -- "$HOME/csce465-hw3/inbox")
+inbox=$(realpath -e -- "$INBOX")
 input=$(realpath -e -- "$1")
 
 if [[ "$input" != "$inbox/"* || ! -f "$input" || ! -r "$input" ]]; then
@@ -14,5 +17,4 @@ if [[ "$input" != "$inbox/"* || ! -f "$input" || ! -r "$input" ]]; then
     exit 1
 fi
 
-script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
-exec "$script_dir/../../legacy_log_parser" "$input"
+exec "$PARSER" "$input"
