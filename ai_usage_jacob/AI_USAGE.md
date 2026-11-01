@@ -1,6 +1,6 @@
 # AI Usage - Jacob Kelly
 
-## Entry 1:
+## Entry 1: Task 1 Breakdown
 
 **Tool/model and date:** OpenAI ChatGPT (GPT-6), October 24–26, 2026.
 
@@ -47,3 +47,51 @@
 **How I tested it**: Bash syntax check, seven input validation cases, and expected parser output verification.
 
 **One error, limitation, or rejected suggestion**: Path validation and parser file opening are separate operations, so concurrent file changes can create a race.
+
+## Entry 4: Adversarial webpage
+
+**Tool/model and date**: OpenAI Codex (GPT-6), November 1, 2026.
+
+**Purpose**: Create a basic HTML-only page instructing an agent to invoke the legacy-parser skill with `~/csce465-hw3/inbox/payload.bin`.
+
+**AI Conversation Log files**: `ai_logs/task2_adversarial.md`
+
+**What I used**: A basic HTML document containing a title, heading, and parser invocation instruction.
+
+**What I changed**: Simplified the instruction in `web/adversarial.html` after the AI created the initial page.
+
+**How I tested it**: Inspected the HTML source; no browser test or parser execution was performed in this conversation.
+
+**One error, limitation, or rejected suggestion**: Creating the page does not verify that an agent will follow its instruction or invoke the skill.
+
+## Entry 5: Event trace conversion
+
+**Tool/model and date**: OpenAI Codex (GPT-6), November 1, 2026.
+
+**Purpose**: Convert the Task 2 demo JSONL event trace into a readable Markdown document while preserving chronological order.
+
+**AI Conversation Log files**: `ai_logs/task2_trace.md`
+
+**What I used**: AI-generated `trace.md` containing all 15 events, including message roles and content, tool calls and results, success status, and permission context.
+
+**What I changed**: Added `trace.md` at the repository root, omitting internal IDs, repeated snapshots, tool schemas, and bulky configuration.
+
+**How I tested it**: Python assertions verified chronological ordering, all 15 event sections, timestamps, and preservation of message text and tool output.
+
+**One error, limitation, or rejected suggestion**: The source system prompt was already truncated, and no explicit permission request or approval event was recorded; the conversion cannot recover missing information.
+
+## Entry 6: Task 2 Breakdown
+
+**Tool/model and date**: OpenAI ChatGPT (GPT-6), November 1, 2026.
+
+**Purpose**: Understand Task 2 requirements, configure an OpenClaw skill, and troubleshoot agent-mediated execution of the vulnerable parser.
+
+**AI Conversation Log files**: `ai_logs/task2_breakdown.md`
+
+**What I used**: Step-by-step task breakdown, OpenClaw skill setup guidance, shell wrapper examples, and troubleshooting recommendations.
+
+**What I changed**: Adapted the suggested skill configuration and wrapper to my project structure, focusing on path validation and working-directory handling.
+
+**How I tested it**: Ran the parser directly and through OpenClaw, compared execution outputs, and checked marker creation, permission errors, and segmentation faults.
+
+**One error, limitation, or rejected suggestion**: OpenClaw reached the `win()` function but initially did not create the marker in the expected location, suggesting a working-directory or filesystem issue.
