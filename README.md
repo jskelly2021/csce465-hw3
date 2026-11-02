@@ -14,8 +14,8 @@ Confirm each was installed.
 ```sh
 gcc --version
 gdb --version
-checksecd --version
-aa-status --help
+checksec --version
+aa-status --version
 ```
 
 ## Task 1
@@ -84,3 +84,30 @@ ls markers/
 ```
 
 The payload should redirect execution to `win()`, creating `markers/ret2win.txt` and attempting to read the protected decoy. Reading the protected decoy file should fail without elevated permissions.
+
+## Task 3
+
+### Setup and Compilation
+
+Build and test the fixed version of the parser from the repository root:
+
+```sh
+gcc -O2 -g -fstack-protector-strong -D_FORTIFY_SOURCE=3 \
+  -fPIE -pie -Wl,-z,relro,-z,now -Wl,-z,noexecstack \
+  -Wall -Wextra -Werror \
+  -o legacy_log_parser_fixed legacy_log_parser_fixed.c
+```
+
+Verify the binary's security properties, the protections disabled in Task 1 are turned back on and some more are added:
+
+```sh
+checksec --file=./legacy_log_parser_fixed
+```
+
+### Run the tests
+
+Run the command:
+
+```sh
+python3 tests/test_fixed_parser.py ./legacy_log_parser_fixed
+```
