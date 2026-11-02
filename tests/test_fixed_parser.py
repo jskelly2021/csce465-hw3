@@ -54,12 +54,13 @@ def main():
 
         # Run the original generator in isolation so its payload stays in the
         # temporary directory and its offset/address are not duplicated here.
-        (root / "tests").mkdir()
+        (root / "inbox").mkdir()
         subprocess.run(
             [sys.executable, str(project / "src" / "make_payload.py")],
             cwd=root, capture_output=True, check=True, timeout=5,
         )
-        check_rejected("original exploit payload", root / "tests" / "ret2win_payload.bin")
+        check_rejected("original exploit payload", root / "inbox" / "payload.bin")
+
     print("All 5 cases passed")
 
 

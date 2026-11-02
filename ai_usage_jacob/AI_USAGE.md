@@ -95,3 +95,19 @@
 **How I tested it**: Ran the parser directly and through OpenClaw, compared execution outputs, and checked marker creation, permission errors, and segmentation faults.
 
 **One error, limitation, or rejected suggestion**: OpenClaw reached the `win()` function but initially did not create the marker in the expected location, suggesting a working-directory or filesystem issue.
+
+## Entry 7: Task 4 Breakdown
+
+**Tool/model and date**: OpenAI ChatGPT (GPT-6), November 2, 2026.
+
+**Purpose**: Understand Task 4's DAC and MAC requirements, configure a low-privilege `agentlab` account and AppArmor confinement, interpret audit logs, and plan a portable runtime layout for the vulnerable parser.
+
+**AI Conversation Log files**: `task4_apparmor_conversation.md` (edited Markdown conversation record).
+
+**What I used**: Step-by-step explanations of Unix permissions, ACLs, AppArmor rules, profile enforcement, and the distinction between DAC and MAC. I also used example commands for permission checks, profile loading, log inspection, and a proposed deployment under `/opt/csce465-hw3`.
+
+**What I changed**: Configured and verified the `agentlab` account and permissions needed to run the parser under confinement. Refined the AppArmor profile to allow the payload and marker operations while denying the protected decoy. Planned a fixed `/opt/csce465-hw3` runtime location to avoid user-specific home directory paths.
+
+**How I tested it**: Ran the vulnerable parser with the payload using both `sudo -u agentlab ./legacy_log_parser ./inbox/payload.bin` and `sudo ./legacy_log_parser ./inbox/payload.bin`. Inspected `journalctl -k` output, confirmed that execution reached `win()`, and observed an AppArmor denial for reading `/opt/agentsec/decoy.txt` in the root-run test, alongside a denied `dac_override` capability.
+
+**One error, limitation, or rejected suggestion**: A failed decoy read as `agentlab` alone was not proof of an AppArmor denial, because Unix permissions (`chmod 600`) could block it first. I used the root-run denial log to verify MAC independently.
