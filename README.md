@@ -189,3 +189,7 @@ Run the command:
 ```sh
 python3 tests/test_fixed_parser.py ./legacy_log_parser_fixed
 ```
+
+## Task 4
+
+### 
