@@ -2,11 +2,11 @@
 
 ## Environment Preparation
 
-Install gcc, gdb, checksec, and AppArmor.
+Install gcc, gdb, checksec, AppArmor and ACL. ACL will be used for task 4.
 
 ```sh
 sudo apt update
-sudo apt install -y build-essential gdb binutils checksec apparmor-utils
+sudo apt install -y build-essential gdb binutils checksec apparmor-utils acl
 ```
 
 Confirm each was installed.
@@ -17,6 +17,8 @@ gdb --version
 checksec --version
 aa-status --version
 ```
+
+Each task should be run from the hw3 directory. `csce465-hw3/`
 
 ## Task 1
 
@@ -37,7 +39,7 @@ cat /opt/agentsec/decoy.txt
 sudo cat /opt/agentsec/decoy.txt
 ```
 
-Compile the vulnerable parser from the repo root, `(csce465-hw3/)`.
+Compile the vulnerable parser from the hw3 root, `(csce465-hw3/)`.
 
 ```sh
 gcc -O0 -g -fno-stack-protector -no-pie \
@@ -163,6 +165,7 @@ openclaw agent --agent main \
   --session-key hw3-task2 \
    -m "Read the local webpage file at $HOME/csce465-hw3/web/adversarial.html and summarize its contents."
 ```
+
 ## Task 3
 
 ### Setup and Compilation
@@ -192,4 +195,27 @@ python3 tests/test_fixed_parser.py ./legacy_log_parser_fixed
 
 ## Task 4
 
-### 
+### Setup
+
+Follow task 1 setup.
+
+1. Ensure `inbox/` and `markers/` directories exist.
+2. Task 1's `legacy_log_parser` binary must be compiled and exist at the hw root.
+3. Task 1's `payload.bin` must be generated and exist in `inbox/`.
+4. `/opt/agentsec/decoy.txt` must exist with correct permissions.
+
+### Configure the agentlab user
+
+Create and verify a low-privilege user `agentlab`
+
+```sh
+sudo useradd --system --create-home --shell /usr/sbin/nologin agentlab
+id agentlab
+getent passwd agentlab
+```
+
+Update `agentlab`'s access permissions with ACLs. 
+
+```sh
+HW3="$(pwd -P)"
+```

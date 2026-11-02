@@ -8,6 +8,6 @@ payload = b"A" * offset
 
 payload += struct.pack("<Q", win_addr)
 
-Path("tests/ret2win_payload.bin").write_bytes(payload)
+Path("inbox/payload.bin").write_bytes(payload)
 
-print("Output payload to tests/ret2win_payload.bin")
+print("Output payload to inbox/payload.bin")
