@@ -173,7 +173,7 @@ Build and test the fixed version of the parser from the repository root:
 gcc -O2 -g -fstack-protector-strong -D_FORTIFY_SOURCE=3 \
   -fPIE -pie -Wl,-z,relro,-z,now -Wl,-z,noexecstack \
   -Wall -Wextra -Werror \
-  -o legacy_log_parser_fixed legacy_log_parser_fixed.c
+  -o legacy_log_parser_fixed src/legacy_log_parser_fixed.c
 ```
 
 Verify the binary's security properties, the protections disabled in Task 1 are turned back on and some more are added:
