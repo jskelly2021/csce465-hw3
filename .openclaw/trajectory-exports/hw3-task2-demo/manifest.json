@@ -1,0 +1,59 @@
+{
+  "traceSchema": "openclaw-trajectory",
+  "schemaVersion": 1,
+  "generatedAt": "2026-11-01T19:58:45.867Z",
+  "traceId": "c7d8ec0b-d5d8-4e85-9556-c2f2d7485d0d",
+  "sessionId": "c7d8ec0b-d5d8-4e85-9556-c2f2d7485d0d",
+  "sessionKey": "agent:main:hw3-task2-demo",
+  "workspaceDir": "$WORKSPACE_DIR",
+  "leafId": "1737cae2",
+  "eventCount": 15,
+  "runtimeEventCount": 7,
+  "transcriptEventCount": 8,
+  "sourceFiles": {
+    "session": "$OPENC…sonl",
+    "runtime": "$OPENCLAW_STATE_DIR/agents/main/sessions/c7d8ec0b-d5d8-4e85-9556-c2f2d7485d0d.trajectory.jsonl"
+  },
+  "supplementalFiles": [
+    "metadata.json",
+    "artifacts.json",
+    "prompts.json"
+  ],
+  "contents": [
+    {
+      "path": "metadata.json",
+      "mediaType": "application/json",
+      "bytes": 38047
+    },
+    {
+      "path": "artifacts.json",
+      "mediaType": "application/json",
+      "bytes": 1776
+    },
+    {
+      "path": "prompts.json",
+      "mediaType": "application/json",
+      "bytes": 18616
+    },
+    {
+      "path": "events.jsonl",
+      "mediaType": "application/x-ndjson",
+      "bytes": 62694
+    },
+    {
+      "path": "session-branch.json",
+      "mediaType": "application/json",
+      "bytes": 4543
+    },
+    {
+      "path": "system-prompt.txt",
+      "mediaType": "text/plain; charset=utf-8",
+      "bytes": 2017
+    },
+    {
+      "path": "tools.json",
+      "mediaType": "application/json",
+      "bytes": 24265
+    }
+  ]
+}
